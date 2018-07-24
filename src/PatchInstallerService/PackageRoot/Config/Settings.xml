@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+  <Section Name="PatchVerificationSettings">
+    <Parameter Name="Example" Value="true" />
+    <!-- 
+    <Parameter Name="[PATCH_NAME]" Value="true" /> 
+    -->
+  </Section>
+
+  <Section Name="PatchInstallationSettings">
+    <Parameter Name="Example" Value="false" />
+    <!-- 
+    <Parameter Name="[PATCH_NAME]" Value="false" /> 
+    -->
+  </Section>
+
+  <Section Name="ScanSettings">
+    <Parameter Name="ScanIntervalRandomizationSeconds" Value="120" />
+    <Parameter Name="ScanIntervalSeconds" Value="120" />
+  </Section>
+
+  <Section Name="HealthReportSettings">
+    <Parameter Name="RemoveWhenExpired" Value="true" />
+    <Parameter Name="TimeToLiveSeconds" Value="300" />
+    <Parameter Name="ReportMissingAs" Value="Warning" />
+  </Section>
+</Settings>
