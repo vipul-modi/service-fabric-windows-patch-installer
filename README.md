@@ -7,7 +7,7 @@ author: vipulm-msft
 # Service Fabric Windows Patch Installer Application
 Service Fabric Windows Patch Installer is a sample application for installing custom patches or software on [Microsoft Azure Service Fabric](https://azure.microsoft.com/services/service-fabric/) clusters.
 
-> Use [Service Fabric Patch Orchestration Service (POA)](https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-patch-orchestration-application) as a supported mechanism for patching machies in a Service Fabric cluster.
+> Use [Service Fabric Patch Orchestration Service (POA)](https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-patch-orchestration-application) as a supported mechanism for patching machines in a Service Fabric cluster.
 
 This application should be used for:
 - Installing a patch not available through Service Fabric Patch Orchestration Service
@@ -50,14 +50,12 @@ The patch package consists of an installation script `install.cmd` and an option
 - Add `install.cmd` file under the data package folder created above. The installation file must have all necessary steps for installing the patch including rebooting the machine if necessary. Add all binaries used by the installation script to the data package as well. 
 
 
-- Add `verify.cmd` file under the data package folder created above. This file is required for patches not found using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command. It file verifies if the patch is installed on the machine or not. If the patch is installed, the verification is successful and the script must return `0` exit code. The script must return a non-zero exit code if the verification fails or if the patch is not found.
-
-If the patch can be found using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command, then its name must match the `HotFixID` name returned by this command.
+- Add `verify.cmd` file under the data package folder created above. This file is required for patches that **can not** be verified using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command. The `verify.cmd` file verifies if the patch is installed on the machine or not. If the patch is installed, the verification is successful and the script must return `0` exit code. The script must return a non-zero exit code if the verification fails or if the patch is not found. If the patch can be found using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command, then its name must match the `HotFixID` name returned by this command.
 
 #### 3. Enable verification and installation of the patch
 The  `PatchVerificationSettings` and `PatchInstallationSettings` controls the verification and installation of the specific patches. Add the name of the patch and using a boolean value of `true` or `false`, enable or disable the installation and verification. 
 
-If a particular patch requires reboot of the machine, ensure that by default the installation is turned off. You can then enable the installation through an application upgrade (see `EXAMPLE_PATCH` for example) to ensure the avaiability of the deployed application and servies in the cluster.
+If a particular patch requires reboot of the machine, ensure that by default the installation is turned off. You can then enable the installation through an application upgrade (see `EXAMPLE_PATCH` for example) to ensure the availability of the deployed application and services in the cluster.
 
 ## Guidelines for contributing patch packages
 
