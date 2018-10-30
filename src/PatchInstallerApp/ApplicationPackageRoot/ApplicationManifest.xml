@@ -5,7 +5,7 @@
     <!-- 
     <Parameter Name="Install_[PATCH_NAME]" DefaultValue="false" />
     -->
-    <Parameter Name="Install_Example" DefaultValue="false" />
+    <Parameter Name="Install_EXAMPLE_PATCH" DefaultValue="false" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -19,7 +19,7 @@
             <!-- 
             <Parameter Name="[PATCH_NAME]" Value="[Install_[PATCH_NAME]]" />
             -->
-            <Parameter Name="Example" Value="[Install_Example]" />
+            <Parameter Name="EXAMPLE_PATCH" Value="[Install_EXAMPLE_PATCH]" />
           </Section>
         </Settings>
       </ConfigOverride>

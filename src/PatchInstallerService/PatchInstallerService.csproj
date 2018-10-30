@@ -9,14 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric" Version="6.1.480" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.0.480" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.480" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.3.187" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.2.187" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.187" />
     <PackageReference Include="System.Management" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PackageRoot\Example\" />
+    <Folder Include="PackageRoot\EXAMPLE_PATCH\" />
   </ItemGroup>
 
 </Project>

@@ -2,14 +2,14 @@
 <Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
 
   <Section Name="PatchVerificationSettings">
-    <Parameter Name="Example" Value="true" />
+    <Parameter Name="EXAMPLE_PATCH" Value="true" />
     <!-- 
     <Parameter Name="[PATCH_NAME]" Value="true" /> 
     -->
   </Section>
 
   <Section Name="PatchInstallationSettings">
-    <Parameter Name="Example" Value="false" />
+    <Parameter Name="EXAMPLE_PATCH" Value="false" />
     <!-- 
     <Parameter Name="[PATCH_NAME]" Value="false" /> 
     -->
