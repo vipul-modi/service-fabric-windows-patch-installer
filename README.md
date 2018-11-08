@@ -28,13 +28,13 @@ The result of the verification and installation are reported as the health event
 
 ### Patch Description
 |Patch|Description|
-|-|-|
+|:-:|:-|
 |EXAMPLE_PATCH|An example patch that shows how to build patches. |
 
 ### Patch Install and Verification Information
-|Patch|Verification Control Parameter|Installation Control Parameter|Reboots after installation?|
-|:-:|:-:|:-:|:-:|
-|EXAMPLE_PATCH|`Verify_EXAMPLE_PATCH`|`Verify_EXAMPLE_PATCH`|`No`|
+|Patch|Verification Control Parameter|Installation Control Parameter|Reboots after installation?|Other Considerations|
+|:-:|:-:|:-:|:-:|:-|
+|EXAMPLE_PATCH|`Verify_EXAMPLE_PATCH`|`Install_EXAMPLE_PATCH`|`No`|None|
 
 ## Usage
 
