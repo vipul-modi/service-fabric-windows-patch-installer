@@ -15,4 +15,9 @@
     <PackageReference Include="System.Management" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PackageRoot\EXAMPLE_PATCH\" />
+    <Folder Include="PackageRoot\MTU_PATCH\" />
+  </ItemGroup>
+
 </Project>
