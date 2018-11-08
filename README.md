@@ -28,22 +28,27 @@ The result of the verification and installation are reported as the health event
 
 ### Patch Description
 |Patch|Description|
-|:-:|:-|
+|:-|:-|
 |EXAMPLE_PATCH|An example patch that shows how to build patches. |
+|MTU_PATCH|Resets the MTU (Maximum Transfer Unit) to 1500 bytes to avoid network performance issues with containers running in NAT mode. <br/><br/>In certain conditions, due to issues in Windows networking stack, interfaces on the machine with IPv4 addressing can end up with MTU settings less than 1500 bytes. This would result in increased network latency for the Windows container running on that machine with NAT networking mode. This patch reset the MTU value to 1500 for IPv4 interfaces on that have MTU size less thank 1500. The scan for the value is performed based on the `ScanSettings` configuration of the PatchInstallerService. |
+|||
 
 ### Patch Install and Verification Information
 |Patch|Verification Control Parameter|Installation Control Parameter|Reboots after installation?|Other Considerations|
-|:-:|:-:|:-:|:-:|:-|
+|:-|:-|:-|:-|:-|
 |EXAMPLE_PATCH|`Verify_EXAMPLE_PATCH`|`Install_EXAMPLE_PATCH`|`No`|None|
+|MTU_PATCH|`Verify_MTU_PATCH`|`Install_MTU_PATCH`|`No`|None|
+||||||
+
 
 ## Usage
 
-## Build and Deploy Application
+## Build Application
 If you do not have the patch application already deployed in the cluster, build the application and then deploy it in your cluster. Once deployed, you can selectively enable the verification and installation of particular patches by upgrading application with specific application parameters. 
 
 [Setup your development environment with Visual Studio 2017](https://docs.microsoft.com/azure/service-fabric/service-fabric-get-started). 
 
-* Open PowerShell command prompt and run `build.ps1` script. It should produce an output like below.
+Open PowerShell command prompt and run `build.ps1` script. It should produce an output like below.
 
 ```PowerShell
 PS E:\patch-installer-app> .\build.ps1
@@ -60,9 +65,21 @@ Using msbuild from C:\Program Files (x86)\Microsoft Visual Studio\2017\Professio
 PS E:\patch-installer-app>
 ```
 
+By default the script will create a `release` package of the application in `src\PatchInstallerApp\pkg\Release` folder. 
 
-* By default the script will create a `release` package of the application in `src\PatchInstallerApp\pkg\Release` folder. 
+## Quick Install
+If you do not have the patch application already deployed in the cluster, certain patches offer a quick way to deploy them in the cluster. These patches are the ones where installation does not reboot the node or affect the application running on the node. Please note that quick install instructions are provided for installation of single patch. If you need to quick install multiple patches from the table below, combine the application parameters that enable the verification and installation of those patch when deploying the application.
 
+Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command and then run the installation instruction provided below for quick install of the patch.
+
+
+|Quick Install Patch|Install Instructions|
+|:-|:-|
+|MTU_PATCH|`. src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection `|
+|||
+
+
+## Deploy Application
 * Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
 
 * Deploy the application using the following PowerShell command
@@ -70,6 +87,7 @@ PS E:\patch-installer-app>
 ```PowerShell
 . src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection
 ```
+
 ## Install Patches
 ### Patches that do not reboot the machine
 Patches that do not reboot the machine can be enabled for verification and installation via application parameters at the time of the application deployment or by running an application upgrade after the deployment using the following commands.
