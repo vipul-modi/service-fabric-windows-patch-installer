@@ -24,92 +24,21 @@ A patch is described as a data package for the patch installer service. The pack
 
 The result of the verification and installation are reported as the health events on the node. If the patch is not found a `Warning` health event is reported on the node. If the patch is found then an `Ok` health event is reported on the node.
 
-### Creating new patch package
-To create a patch package, follow the instructions below.
-
-#### 1. Create patch data package
-Create a data package that describes the patch.
-
-- Open Visual Studio solution and go to `PackageRoot` folder of `PatchInstallerService`.
-
-- Create a folder with the name of the patch (for example, see folder `EXAMPLE_PATCH`)
-
-- Add a new data package in the `ServiceManifest.xml`. For example,
-    ```XML
-    <DataPackage Name="EXAMPLE_PATCH" Version="1.0.0" />
-
-    ```
-#### 2. Add installation and verification scripts
-The patch package consists of an installation script `install.cmd` and an optional verification script `verify.cmd` along with patch binaries. 
-
-- Add `install.cmd` file under the data package folder created above. The installation file must have all necessary steps for installing the patch including rebooting the machine if necessary. Add all binaries used by the installation script to the data package as well. 
-
-
-- Add `verify.cmd` file under the data package folder created above. This file is required for patches that **can not** be verified using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command. The `verify.cmd` file verifies if the patch is installed on the machine or not. If the patch is installed, the verification is successful and the script must return `0` exit code. The script must return a non-zero exit code if the verification fails or if the patch is not found. If the patch can be found using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command, then its name must match the `HotFixID` name returned by this command.
-
-#### 3. Enable verification and installation of the patch
-The  `PatchVerificationSettings` and `PatchInstallationSettings` controls the verification and installation of the specific patches. Add the name of the patch and using a boolean value of `true` or `false`, enable or disable the installation and verification in `Settings.xml` file of the service. For example,
-
-```XML
-  <Section Name="PatchVerificationSettings">
-    <Parameter Name="EXAMPLE_PATCH" Value="false" />
-  </Section>
-
-  <Section Name="PatchInstallationSettings">
-    <Parameter Name="EXAMPLE_PATCH" Value="false" />
-  </Section>
-```
-
-Add parameters to override and control the behavior of the patch verification and installation in the application manifest (`ApplicationManifest.xml`) with default value of `false`. For example,
-
-For example,
-```XML
-  <Parameters>
-
-    ...  
-    <Parameter Name="Verify_EXAMPLE_PATCH" DefaultValue="false" />
-    <Parameter Name="Install_EXAMPLE_PATCH" DefaultValue="false" />
-    
-  </Parameters>
-
-...
-      <ConfigOverride Name="Config">
-        <Settings>
-          <Section Name="PatchVerificationSettings">
-            <Parameter Name="EXAMPLE_PATCH" Value="[Verify_EXAMPLE_PATCH]" />
-          </Section>
-          <Section Name="PatchInstallationSettings">
-            <Parameter Name="EXAMPLE_PATCH" Value="[Install_EXAMPLE_PATCH]" />
-          </Section>
-        </Settings>
-      </ConfigOverride>
-```
-
-This way user can control the verification and installation of specific patch at the time of deployment. They also allow controlled installation of the patches that reboot the machine via application upgrade.
-
-## Guidelines for contributing patch packages
-* Do not remove existing patch packages
-
-* Ensure that you have added application parameters with default value as `false` to control the installation and verification of the patch.
-
-* Provide description of the patch and instructions on how to enable the verification and installation of the patch. Indicate if the patch reboots the machine and requires safe installation procedure.
-
 ## Patches
 
-## Patch Description
+### Patch Description
 |Patch|Description|
 |-|-|
 |EXAMPLE_PATCH|An example patch that shows how to build patches. |
 
-## Patch Install and Verification Information
+### Patch Install and Verification Information
 |Patch|Verification Control Parameter|Installation Control Parameter|Reboots after installation?|
 |:-:|:-:|:-:|:-:|
 |EXAMPLE_PATCH|`Verify_EXAMPLE_PATCH`|`Verify_EXAMPLE_PATCH`|`No`|
 
 ## Usage
 
-
-## Building and Deploying
+## Build and Deploy Application
 If you do not have the patch application already deployed in the cluster, build the application and then deploy it in your cluster. Once deployed, you can selectively enable the verification and installation of particular patches by upgrading application with specific application parameters. 
 
 [Setup your development environment with Visual Studio 2017](https://docs.microsoft.com/azure/service-fabric/service-fabric-get-started). 
@@ -141,7 +70,7 @@ PS E:\patch-installer-app>
 ```PowerShell
 . src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection
 ```
-
+## Install Patches
 ### Patches that do not reboot the machine
 Patches that do not reboot the machine can be enabled for verification and installation via application parameters at the time of the application deployment or by running an application upgrade after the deployment using the following commands.
 
@@ -218,3 +147,73 @@ Once the upgrade is completed, the nodes that do not have the patch installed wi
     ```
 
 The patch is going to be installed upgrade domain by upgrade domain. Once the upgrade is completed, nodes that did not have the patch installed and were in the `Warning` state should become `Ok` again.
+
+## Guidelines for contributing patch packages
+* Do not remove existing patch packages
+
+* Ensure that you have added application parameters with default value as `false` to control the installation and verification of the patch. See below for details.
+
+* Provide description of the patch and instructions on how to enable the verification and installation of the patch. Indicate if the patch reboots the machine and requires safe installation procedure.
+
+## Creating new patch package
+To create a patch package, follow the instructions below.
+
+### 1. Create patch data package
+Create a data package that describes the patch.
+
+- Open Visual Studio solution and go to `PackageRoot` folder of `PatchInstallerService`.
+
+- Create a folder with the name of the patch (for example, see folder `EXAMPLE_PATCH`)
+
+- Add a new data package in the `ServiceManifest.xml`. For example,
+    ```XML
+    <DataPackage Name="EXAMPLE_PATCH" Version="1.0.0" />
+
+    ```
+### 2. Add installation and verification scripts
+The patch package consists of an installation script `install.cmd` and an optional verification script `verify.cmd` along with patch binaries. 
+
+- Add `install.cmd` file under the data package folder created above. The installation file must have all necessary steps for installing the patch including rebooting the machine if necessary. Add all binaries used by the installation script to the data package as well. 
+
+
+- Add `verify.cmd` file under the data package folder created above. This file is required for patches that **can not** be verified using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command. The `verify.cmd` file verifies if the patch is installed on the machine or not. If the patch is installed, the verification is successful and the script must return `0` exit code. The script must return a non-zero exit code if the verification fails or if the patch is not found. If the patch can be found using `Get-WmiObject -Class Win32_QuickFixEngineering | SELECT HotFixID,InstalledOn` PowerShell command, then its name must match the `HotFixID` name returned by this command.
+
+### 3. Enable verification and installation of the patch
+The  `PatchVerificationSettings` and `PatchInstallationSettings` controls the verification and installation of the specific patches. Add the name of the patch and using a boolean value of `true` or `false`, enable or disable the installation and verification in `Settings.xml` file of the service. For example,
+
+```XML
+  <Section Name="PatchVerificationSettings">
+    <Parameter Name="EXAMPLE_PATCH" Value="false" />
+  </Section>
+
+  <Section Name="PatchInstallationSettings">
+    <Parameter Name="EXAMPLE_PATCH" Value="false" />
+  </Section>
+```
+
+Add parameters to override and control the behavior of the patch verification and installation in the application manifest (`ApplicationManifest.xml`) with default value of `false`. For example,
+
+For example,
+```XML
+  <Parameters>
+
+    ...  
+    <Parameter Name="Verify_EXAMPLE_PATCH" DefaultValue="false" />
+    <Parameter Name="Install_EXAMPLE_PATCH" DefaultValue="false" />
+    
+  </Parameters>
+
+...
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="PatchVerificationSettings">
+            <Parameter Name="EXAMPLE_PATCH" Value="[Verify_EXAMPLE_PATCH]" />
+          </Section>
+          <Section Name="PatchInstallationSettings">
+            <Parameter Name="EXAMPLE_PATCH" Value="[Install_EXAMPLE_PATCH]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+```
+
+This way user can control the verification and installation of specific patch at the time of deployment. They also allow controlled installation of the patches that reboot the machine via application upgrade.
