@@ -21,14 +21,16 @@ param
     [string]$MSBuildFullPath
 )
 
+$ErrorActionPreference = "Stop"
 $PSScriptRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-$SfProjRoot = $PSScriptRoot + "\\src\\PatchInstallerApp"
-
+$NugetFullPath = join-path $PSScriptRoot "nuget.exe"
+$SrcRoot = join-path $PSScriptRoot "src"
+$SfProjRoot = join-path $PSScriptRoot "src\\PatchInstallerApp"
 
 
 if ($Target -eq "rebuild") {
     $restore = "-r"
-    $buildTarget = "clean;rebuild;package"
+    $buildTarget = "restore;clean;rebuild;package"
 } elseif ($Target -eq "clean") {
     $buildTarget = "clean"
 }
@@ -89,9 +91,21 @@ if (!(Test-Path $MSBuildFullPath))
 }
 
 
-Write-Output "Using msbuild from $msbuildFullPath"
+Set-location -Path $SrcRoot
+
+$nugetArgs = @(
+    "restore")
+
+Write-Output "Changing the working directory to $SrcRoot"
+& $NugetFullPath $nugetArgs
+if ($lastexitcode -ne 0) {
+    Set-location -Path $PSScriptRoot
+    throw ("Failed " + $NugetFullPath + " " + $nugetArgs)
+}
 
 Set-location -Path $SfProjRoot
+Write-Output "Changing the working directory to $SfProjRoot"
+Write-Output "Using msbuild from $msbuildFullPath"
 $msbuildArgs = @(
     "/nr:false", 
     "/nologo", 
