@@ -70,65 +70,67 @@ By default the script will create a `release` package of the application in `src
 ## Quick Install
 If you do not have the patch application already deployed in the cluster, certain patches offer a quick way to deploy them in the cluster. These patches are the ones where installation does not reboot the node or affect the application running on the node. Please note that quick install instructions are provided for installation of single patch. If you need to quick install multiple patches from the table below, combine the application parameters that enable the verification and installation of those patch when deploying the application.
 
-Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command and then run the installation instruction provided below for quick install of the patch.
+- Open PowerShell command prompt and go to the root of the repository.
 
+- Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
+
+- Run the installation instruction listed below for enabling verification and installation of a  particular patch.
 
 |Quick Install Patch|Install Instructions|
 |:-|:-|
-|MTU_PATCH|`. src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection `|
+|MTU_PATCH|`. src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection -ApplicationParameter @{ 'Verify_MTU_PATCH'='true'; 'Install_MTU_PATCH'='true' }`|
 |||
 
 
 ## Deploy Application
-* Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
 
-* Deploy the application using the following PowerShell command
+- Open PowerShell command prompt and go to the root of the repository.
 
-```PowerShell
-. src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection
-```
+- Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
+
+- Deploy the application using the following PowerShell command.
+
+  ```PowerShell
+  . src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection
+  ```
 
 ## Install Patches
 ### Patches that do not reboot the machine
-Patches that do not reboot the machine can be enabled for verification and installation via application parameters at the time of the application deployment or by running an application upgrade after the deployment using the following commands.
+Patches that do not reboot the machine can be enabled for verification and installation via application parameters at the time of the application deployment.
 
-* Connect to the Service Fabric Cluster using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
+- Open PowerShell command prompt and go to the root of the repository.
 
-* Get the current set of application parameters of the application.
+- Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
 
-```PowerShell
- $app = Get-ServiceFabricApplication fabric:/PatchInstallerApp 
-```
+- Get the current set of application paarameter values and then redeploy the application by adding the application parameters that enables the verification and installation of the desired patch. See the table in above section for the names of the parameters for each patch. For example, the commands below enable installation and verificaation of `EXAMPLE_PATCH`.
+    
+    ```PowerShell
+    # Get current application parameters
+    $app = Get-ServiceFabricApplication fabric:/PatchInstallerApp 
 
-* Upgrade the application with the new set of application parameters that enables installation and verification of the patch. See the table in above section for the names of the parameters for each patch. 
+    # Create the new parameters application.
+    $newAppParams = @{} 
 
-For example, the command below enables installation and verification of the `EXAMPLE_PATCH`.
+    foreach($p in $app.ApplicationParameters) { $newAppParams.add($p.Name,$p.Value) }
 
-Create the new parameters application.
-```PowerShell
-$newAppParams = @{} 
+    $newAppParams['Verify_EXAMPLE_PATCH']='true'
+    $newAppParams['Install_EXAMPLE_PATCH']='true'
 
-foreach($p in $app.ApplicationParameters) { $newAppParams.add($p.Name,$p.Value) }
+    . src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection -ApplicationParameter $newAppParams -OverwriteBehavior Always
+    
+    ```
 
-$newAppParams['Verify_EXAMPLE_PATCH']='true'
-$newAppParams['Install_EXAMPLE_PATCH']='true'
-```
-
-Upgrade the application with new parameters. 
-```PowerShell
-Start-ServiceFabricApplicationUpgrade -ApplicationName fabric:/PatchInstallerApp -Appl
-icationTypeVersion $app.ApplicationTypeVersion -ApplicationParameter $newAppParams -UnmonitoredAuto
-```
-
-The patch installer application runs the verification script and installation script if required. Check the health events of the nodes to see the status of the patch verification and installation.
+Once the application is installed, the status of the patch will reported as a health event on the node in few minutes.
 
 ### Patches that reboot the machine
 
 Patches whose installation reboot the machine should not be enabled during the application deployment, but should be controlled via monitored upgrade.
 
-* Connect to the Service Fabric Cluster using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
+- Open PowerShell command prompt and go to the root of the repository.
 
-* Upgrade the application with the new set of application parameters that enables just the verification of the patch. See the table in above section for the names of the parameters for each patch. For example, the command below enables verification of the `EXAMPLE_PATCH`.
+- Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
+
+- Get the current set of application paarameter values and then redeploy the application by adding the application parameters that enables ONLY the verification of the desired patch. See the table in above section for the names of the application parameters. For example, the commands below enables verification of `EXAMPLE_PATCH`.
     
     ```PowerShell
     # Get current application parameters
@@ -141,13 +143,13 @@ Patches whose installation reboot the machine should not be enabled during the a
 
     $newAppParams['Verify_EXAMPLE_PATCH']='true'
 
-    # Upgrade the application with new parameters. 
-    Start-ServiceFabricApplicationUpgrade -ApplicationName fabric:/PatchInstallerApp -ApplicationTypeVersion $app.ApplicationTypeVersion -ApplicationParameter $newAppParams -UnmonitoredAuto
+    . src\PatchInstallerApp\Scripts\Deploy-FabricApplication.ps1 -ApplicationPackagePath 'src\PatchInstallerApp\pkg\Release' -PublishProfileFile 'src\PatchInstallerApp\PublishProfiles\Cloud.xml' -UseExistingClusterConnection -ApplicationParameter $newAppParams -OverwriteBehavior Always
+    
     ```
 
-Once the upgrade is completed, the nodes that do not have the patch installed will be in the `Warning` state because of the missing patch health report on them.
+Once the upgrade is completed, the nodes that do not have the patch installed will be in the `Warning` state in few minutes.
 
-*  Upgrade the application with the new set of application parameters that enables the installation of the patch (See the table in above section for the names of the parameters for each patch), but this time perform monitored upgrade with `FailureAction` set to `Manual` (or manual upgrade). The `HealthCheckWaitDurationSec` must be greater than the sum of `ScanIntervalSeconds` and `ScanIntervalRandomizationSeconds` settings in the `Settings.xml` of the service. If the patch installation is supposed to take time, adjust the `HealthCheckWaitDurationSec` and `UpgradeDomainTimeoutSec` timeouts appropriately (see, [Start-ServiceFabricUpgrade](https://docs.microsoft.com/en-us/powershell/module/servicefabric/start-servicefabricapplicationupgrade?view=azureservicefabricps) command for details). As an example, the command below enables installation of the `EXAMPLE_PATCH`. 
+-  Enable the installation of the patch through monitored upgrade of the application with `FailureAction` set to `Manual` (or manual upgrade). The `HealthCheckWaitDurationSec` must be greater than the sum of `ScanIntervalSeconds` and `ScanIntervalRandomizationSeconds` settings in the `Settings.xml` of the service. If the patch installation is supposed to more take time, adjust the `HealthCheckWaitDurationSec` and `UpgradeDomainTimeoutSec` timeouts appropriately (see, [Start-ServiceFabricUpgrade](https://docs.microsoft.com/en-us/powershell/module/servicefabric/start-servicefabricapplicationupgrade?view=azureservicefabricps) command for details). As an example, the command below enables installation of the `EXAMPLE_PATCH`. 
 
     ```PowerShell
      # Get current application parameters
@@ -170,6 +172,8 @@ The patch is going to be installed upgrade domain by upgrade domain. Once the up
 * Do not remove existing patch packages
 
 * Ensure that you have added application parameters with default value as `false` to control the installation and verification of the patch. See below for details.
+
+* Ensure that you have changed the versions in `ServiceManifest.xml` and `ApplicationManifest.xml` appropriately. 
 
 * Provide description of the patch and instructions on how to enable the verification and installation of the patch. Indicate if the patch reboots the machine and requires safe installation procedure.
 
@@ -209,6 +213,23 @@ The  `PatchVerificationSettings` and `PatchInstallationSettings` controls the ve
   </Section>
 ```
 
+Change the version of the `Config` package in `ServiceManifest.xml` file by increasing the last digit. For example, the change below increased the last digit from `0` to `1`.
+```XML
+<ConfigPackage Name="Config" Version="1.0.1" />
+```
+
+Change the version of the `ServiceManifest` in the `ServiceManifest.xml` file by increasing the last digit. For example, the change below increased the last digit from `0` to `1`.
+```XML
+<ServiceManifest Name="PatchInstallerServicePkg"
+                 Version="1.0.1"
+```
+
+Change the version of `ServiceManifestRef` in the `ApplicationManifest.xml` file by increasing the last digit. For example, the change below increased the last digit from `0` to `1`.
+```XML
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="PatchInstallerServicePkg" ServiceManifestVersion="1.0.1" />
+```
+
 Add parameters to override and control the behavior of the patch verification and installation in the application manifest (`ApplicationManifest.xml`) with default value of `false`. For example,
 
 For example,
@@ -232,6 +253,16 @@ For example,
           </Section>
         </Settings>
       </ConfigOverride>
+```
+
+Change the version of `ApplicationManifest` in the `ApplicationManifest.xml` file by increasing the last digit. For example, the change below increased the last digit from `0` to `1`.
+```XML
+<ApplicationManifest 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  ApplicationTypeName="PatchInstallerAppType" 
+  ApplicationTypeVersion="1.0.1" 
+  xmlns="http://schemas.microsoft.com/2011/01/fabric">
 ```
 
 This way user can control the verification and installation of specific patch at the time of deployment. They also allow controlled installation of the patches that reboot the machine via application upgrade.
