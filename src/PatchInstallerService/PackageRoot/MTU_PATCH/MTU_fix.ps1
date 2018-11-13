@@ -3,8 +3,8 @@ $overlaynetworks = @(Get-HNSNetwork | ? {$_.Type -match "Overlay"})
 
 for ($i = 0; $i -lt $overlaynetworks.Length; $i++){
     # Get a list of ids of interfaces that belong to an overlay network. 
-	# This is done by first getting the adapters for an overlay network and then finding all the interfaces used by those adapters.
-	if (!$overlaynetworks[$i].NetworkAdapterName) {
+    # This is done by first getting the adapters for an overlay network and then finding all the interfaces used by those adapters.
+    if (!$overlaynetworks[$i].NetworkAdapterName) {
         continue
     } 
 
