@@ -5,6 +5,6 @@ author: ninzavivek
 ---
 
 ## About this Patch
-This patch queries for IPv4 interfaces on a cluster node that have MTU size set less than 1500 bytes. If it finds one, it will reset the MTU value to 1500 for the interface. This is done in order to match the MTU size set on an interface programmed inside a Windows Container (NAT Networking mode). MTU size mismatch leads to fragmentation which could cause choppy connections in some cases.
+The purpose of this patch is to ensure that the MTU size of each IPv4 interface on a cluster node is set correctly based on the type of container network it is used for.
 
-Please note, this patch is only supposed to deployed on Service Fabric Clusters that have L2 tunnel network setup and have Windows container with only NAT networking mode configured.
+For most interfaces, the MTU size should be set to 1500 bytes to match the MTU size of an interface programmed inside a Windows Container (NAT Networking mode). MTU size mismatch leads to fragmentation, which could cause choppy connections in some cases. An interface that belongs to an overlay network should have its MTU size set to 1450 because an overlay network packet has an additional 50 bytes in its header.
