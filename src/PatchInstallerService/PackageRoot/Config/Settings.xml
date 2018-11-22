@@ -7,6 +7,7 @@
     <Parameter Name="[PATCH_NAME]" Value="false" /> 
     -->
     <Parameter Name="MTU_PATCH" Value="false" /> 
+    <Parameter Name="DNS_LOCALHOST_PATCH" Value="false" />
   </Section>
 
   <Section Name="PatchInstallationSettings">
@@ -15,6 +16,7 @@
     <Parameter Name="[PATCH_NAME]" Value="false" /> 
     -->
     <Parameter Name="MTU_PATCH" Value="false" />
+    <Parameter Name="DNS_LOCALHOST_PATCH" Value="false" />
   </Section>
 
   <Section Name="ScanSettings">
