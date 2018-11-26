@@ -31,14 +31,14 @@ The result of the verification and installation are reported as the health event
 |:-|:-|
 |EXAMPLE_PATCH|An example patch that shows how to build patches. |
 |MTU_PATCH|Resets the MTU (Maximum Transfer Unit) to 1500 bytes to avoid network performance issues with containers running in NAT mode. <br/><br/>In certain conditions, due to issues in Windows networking stack, interfaces on the machine with IPv4 addressing can end up with MTU settings less than 1500 bytes. This would result in increased network latency for the Windows container running on that machine with NAT networking mode. This patch reset the MTU value to 1500 for IPv4 interfaces on that have MTU size less thank 1500. The scan for the value is performed based on the `ScanSettings` configuration of the PatchInstallerService. |
-|||
+|DNS_LOCALHOST_PATCH|Adds a secondary entry for Fabric DNS Service with local host IP (127.0.0.1) to workaround intermittent DNS resolution failures.||
 
 ### Patch Install and Verification Information
 |Patch|Verification Control Parameter|Installation Control Parameter|Reboots after installation?|Other Considerations|
 |:-|:-|:-|:-|:-|
 |EXAMPLE_PATCH|`Verify_EXAMPLE_PATCH`|`Install_EXAMPLE_PATCH`|`No`|None|
 |MTU_PATCH|`Verify_MTU_PATCH`|`Install_MTU_PATCH`|`No`|None|
-||||||
+|DNS_LOCALHOST_PATCH|`Verify_DNS_LOCALHOST_PATCH`|`Install_DNS_LOCALHOST_PATCH`|`No`|None|
 
 
 ## Usage
