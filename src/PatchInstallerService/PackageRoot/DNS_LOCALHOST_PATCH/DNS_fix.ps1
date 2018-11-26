@@ -18,7 +18,7 @@ for ($i = 0; $i -lt $interfaces.Length; $i++) {
         $modifiedDnsServersList = $modifiedDnsServersList + ")"
 
         Try {
-            $command = 'Set-DnsClientServerAddress -AddressFamily Ipv4 -InterfaceIndex ' + $interfaces[$i].InterfaceIndex + ' -ServerAddresses ' + $modifiedDnsServersList
+            $command = 'Set-DnsClientServerAddress -InterfaceIndex ' + $interfaces[$i].InterfaceIndex + ' -ServerAddresses ' + $modifiedDnsServersList
             Write-Output ('Executing command ' + $command)
             Invoke-Expression -Command $command
         }
