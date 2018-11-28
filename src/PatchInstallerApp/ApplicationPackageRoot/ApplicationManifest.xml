@@ -10,6 +10,8 @@
     <Parameter Name="Install_EXAMPLE_PATCH" DefaultValue="false" />
     <Parameter Name="Verify_MTU_PATCH" DefaultValue="false" />
     <Parameter Name="Install_MTU_PATCH" DefaultValue="false" />
+    <Parameter Name="Verify_DNS_LOCALHOST_PATCH" DefaultValue="false" />
+    <Parameter Name="Install_DNS_LOCALHOST_PATCH" DefaultValue="false" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -22,10 +24,12 @@
           <Section Name="PatchVerificationSettings">
             <Parameter Name="EXAMPLE_PATCH" Value="[Verify_EXAMPLE_PATCH]" />
             <Parameter Name="MTU_PATCH" Value="[Verify_MTU_PATCH]" />
+            <Parameter Name="DNS_LOCALHOST_PATCH" Value="[Verify_DNS_LOCALHOST_PATCH]" />
           </Section>
           <Section Name="PatchInstallationSettings">
             <Parameter Name="EXAMPLE_PATCH" Value="[Install_EXAMPLE_PATCH]" />
             <Parameter Name="MTU_PATCH" Value="[Install_MTU_PATCH]" />
+            <Parameter Name="DNS_LOCALHOST_PATCH" Value="[Install_DNS_LOCALHOST_PATCH]" />
           </Section>
         </Settings>
       </ConfigOverride>

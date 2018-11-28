@@ -28,4 +28,5 @@
   <DataPackage Name="[PATCH_NAME]" Version="1.0.0" />
   -->
   <DataPackage Name="MTU_PATCH" Version="1.0.0" />
+  <DataPackage Name="DNS_LOCALHOST_PATCH" Version="1.0.0" />
 </ServiceManifest>
