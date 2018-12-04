@@ -4,6 +4,8 @@ platforms: dotnet, windows
 author: vipulm-msft
 ---
 
+[![Build status](https://ci.appveyor.com/api/projects/status/9ygqxfgcckkkc6mp/branch/master?svg=true)](https://ci.appveyor.com/project/VipulM-MSFT/service-fabric-windows-patch-installer/branch/master)
+
 # Service Fabric Windows Patch Installer Application
 Service Fabric Windows Patch Installer is a sample application for installing custom patches or software on [Microsoft Azure Service Fabric](https://azure.microsoft.com/services/service-fabric/) clusters.
 
