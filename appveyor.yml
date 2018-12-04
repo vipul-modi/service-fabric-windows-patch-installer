@@ -7,4 +7,4 @@ install:
 - ps: MicrosoftServiceFabric.exe /accepteula /sdkcontainerclient /quiet
 - ps: msiexec.exe /i "MicrosoftServiceFabricSDK.msi" /qn
 build_script:
-  C:\projects\myproject\build.ps1
+  . C:\projects\myproject\build.ps1
