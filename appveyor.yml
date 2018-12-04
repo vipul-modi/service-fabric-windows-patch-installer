@@ -1,10 +1,12 @@
 version: 1.0.{build}
 image: Visual Studio 2017
 clone_folder: c:\projects\myproject
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 install:
 - ps: (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/D/D/D/DDD408E4-6802-47FB-B0A1-ECF657BEB35F/MicrosoftServiceFabric.6.4.617.9590.exe', 'MicrosoftServiceFabric.exe')
 - ps: (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/D/D/D/DDD408E4-6802-47FB-B0A1-ECF657BEB35F/MicrosoftServiceFabricSDK.3.3.617.msi', 'MicrosoftServiceFabricSDK.msi')
 - ps: MicrosoftServiceFabric.exe /accepteula /sdkcontainerclient /quiet
 - ps: msiexec.exe /i "MicrosoftServiceFabricSDK.msi" /qn
 build_script:
-  . C:\projects\myproject\build.ps1
+  powershell.exe C:\projects\myproject\build.ps1
