@@ -6,7 +6,7 @@ init:
 install:
 - ps: (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/D/D/D/DDD408E4-6802-47FB-B0A1-ECF657BEB35F/MicrosoftServiceFabric.6.4.617.9590.exe', 'MicrosoftServiceFabric.exe')
 - ps: (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/D/D/D/DDD408E4-6802-47FB-B0A1-ECF657BEB35F/MicrosoftServiceFabricSDK.3.3.617.msi', 'MicrosoftServiceFabricSDK.msi')
-- ps: MicrosoftServiceFabric.exe /accepteula /sdkcontainerclient /quiet
+- ps: MicrosoftServiceFabric.exe /accepteula /quiet
 - ps: msiexec.exe /i "MicrosoftServiceFabricSDK.msi" /qn
 build_script:
   powershell.exe C:\projects\myproject\build.ps1

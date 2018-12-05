@@ -104,7 +104,7 @@ Patches that do not reboot the machine can be enabled for verification and insta
 
 - Connect to the Service Fabric Cluster where you want to deploy the application using [`Connect-ServiceFabricCluster`](https://docs.microsoft.com/en-us/powershell/module/servicefabric/connect-servicefabriccluster?view=azureservicefabricps) PowerShell command. 
 
-- Get the current set of application paarameter values and then redeploy the application by adding the application parameters that enables the verification and installation of the desired patch. See the table in above section for the names of the parameters for each patch. For example, the commands below enable installation and verificaation of `EXAMPLE_PATCH`.
+- Get the current set of application paarameter values and then redeploy the application by adding the application parameters that enables the verification and installation of the desired patch. See the table in above section for the names of the parameters for each patch. For example, the commands below enable installation and verification of `EXAMPLE_PATCH`.
     
     ```PowerShell
     # Get current application parameters
